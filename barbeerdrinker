@@ -1,0 +1,74 @@
+/* 1) Find all distinct drinkers whose phone numbers come from area code 917 and who like Budweiser or Bud (synonim!)
+select distinct name 
+from Drinkers, Likes 
+where phone like "%917-___-____" AND name = drinker 
+AND (beer = "Budweiser" OR beer = "Bud");
+*/
+
+/* 2) What beers does Mike like?
+select beer 
+from Likes 
+where drinker = "Mike";
+*/
+
+/* 3) Which town has the most drinkers? 
+select distinct d.city 
+from Drinkers d 
+where 0 = (select count(*) from Drinkers d1 where d1.city > d.city)
+*/
+
+/* 4) What bars are frequented by drinkers from that town (3)? 
+select distinct bar
+from Frequents inner join Drinkers on Frequents.drinker = Drinkers.name	
+where city = (select distinct d.city from Drinkers d where 0 = (select count(*) from Drinkers d1 where d1.city > d.city))
+*/
+
+/* 5) Provide all bars which serve beers that Mike likes
+select distinct bar
+from Sells
+where beer in (select beer from Likes where drinker = "Mike");
+*/
+
+/* 6) Who likes at least one same beer that Joe or Mike like?
+select distinct drinker
+from Likes
+where beer in (select distinct beer from Likes where drinker = "Joe" or drinker = "Mike") and  drinker != "Joe" and drinker != "Mike";
+*/
+
+/* 7) All bars which sell at least one beer which is liked by at least one drinker who frequents these bars
+select distinct Sells.bar
+from Sells inner join Likes on Sells.beer = Likes.beer
+inner join Frequents on Frequents.bar = Sells.bar and Frequents.drinker = Likes.drinker;
+*/
+
+/* 8) Drinkers who like some beers sold by Caravan bar
+select distinct drinker
+from Likes inner join Sells on Likes.beer = Sells.beer
+where Sells.bar = "Caravan"
+*/
+
+/* 9) Bars which sell Budweiser and are frequented by some drinkers who like Budweiser
+select distinct bar
+from Sells
+where bar in (select distinct bar from Frequents inner join Likes on Frequents.drinker = Likes.drinker where Likes.beer = "Budweiser") 
+			and beer = "Budweiser"
+*/
+
+/* 10) Bars which are frequented by Mike  and Steve
+select f1.bar
+from Frequents f1, Frequents f2
+where f1.bar = f2.bar and f1.drinker = "Mike" and f2.drinker = "Steve"
+*/
+
+/* 11) Drinker who like at least two beers that Mike likes
+select drinker, count(drinker) as numberOfDrinksLiked from
+(select drinker
+from Likes inner join (select beer from Likes where drinker = "Mike")Mike
+on Mike.beer = Likes.beer 
+where drinker != "Mike")total
+group by drinker having numberOfDrinksLiked >= 2
+*/
+
+/* 12) Bars which sell at least 3 beers that Mike likes (do not use COUNT)
+*/
+ 
