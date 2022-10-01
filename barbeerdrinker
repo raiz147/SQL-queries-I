@@ -70,5 +70,10 @@ group by drinker having numberOfDrinksLiked >= 2
 */
 
 /* 12) Bars which sell at least 3 beers that Mike likes (do not use COUNT)
+select distinct bar from (select bar, Sells.beer, price from Sells inner join (select * from Likes where drinker = "Mike")MikeLike on Sells.beer = MikeLike.beer where Sells.price > 0) as b
+where exists (select * from (select bar, Sells.beer, price from Sells inner join (select * from Likes where drinker = "Mike")MikeLike on Sells.beer = MikeLike.beer where Sells.price > 0) as b2,
+                (select bar, Sells.beer, price from Sells inner join (select * from Likes where drinker = "Mike")MikeLike on Sells.beer = MikeLike.beer where Sells.price > 0) as b3,
+                (select bar, Sells.beer, price from Sells inner join (select * from Likes where drinker = "Mike")MikeLike on Sells.beer = MikeLike.beer where Sells.price > 0) as b4
+                where b.bar = b2.bar and b.bar = b3.bar and b.bar = b4.bar and b.beer != b2.beer and b.beer != b3.beer and b.beer != b4.beer and b2.beer != b3.beer and b2.beer != b4.beer)
 */
  
